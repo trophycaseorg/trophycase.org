@@ -157,7 +157,7 @@ psnRouter.get("/getGames", async (req, res) => {
             }
 
             const gameObject = {
-                game: title.trophyTitleName,
+                name: title.trophyTitleName,
                 boxArt: title.trophyTitleIconUrl,
                 platform: title.trophyTitlePlatform,
                 progress: title.progress,

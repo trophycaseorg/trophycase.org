@@ -15,6 +15,7 @@
     "@types/express": "^5.0.6",
     "axios": "^1.15.0",
     "better-sqlite3": "^12.9.0",
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "psn-api": "^2.18.0",
     "sqlite": "^5.1.1",
