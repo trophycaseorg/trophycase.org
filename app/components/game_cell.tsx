@@ -1,5 +1,5 @@
 import { Progress } from "@/components/ui/progress";
-import { PSNGame } from "@/lib/types/psn";
+import { hasEarnedPlatinum, PSNGame } from "@/lib/types/psn";
 
 interface GameCellProps {
     game: PSNGame
@@ -7,6 +7,14 @@ interface GameCellProps {
 
 export default function GameCell(props: GameCellProps) {
     const {game} = props
+
+    const showPlatinumIcon = () => {
+        if (hasEarnedPlatinum(game)) {
+            return (
+                <img src={`/platinum_trophy.png`} className="w-10 h-10" />
+            )
+        }
+    }
 
     return (
         <div className="flex gap-4 flex-wrap w-250px h-45px border-4 border-gray-800 p-4 items-center">
@@ -22,6 +30,7 @@ export default function GameCell(props: GameCellProps) {
                                 {game.platform}
                             </h5>
                         </div>
+                        {showPlatinumIcon()}
                     </div>
                     <p className={`leading-7`}>
                         {game.trophies.length} Trophies

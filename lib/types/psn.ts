@@ -17,3 +17,13 @@ export interface PSNGame {
     progress: number,
     trophies: PSNTrophy[]
 }
+
+export function hasEarnedPlatinum(game: PSNGame): boolean {
+    for (const trophy of game.trophies) {
+        if (trophy.trophyEarned && trophy.trophyType == "platinum") {
+            return true
+        }
+    }
+
+    return false
+}
