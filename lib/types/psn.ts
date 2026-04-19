@@ -18,6 +18,8 @@ export interface PSNGame {
     trophies: PSNTrophy[]
 }
 
+export const trophyRarity: string[] = ["bronze", "silver", "gold", "platinum"]
+
 export function hasEarnedPlatinum(game: PSNGame): boolean {
     for (const trophy of game.trophies) {
         if (trophy.trophyEarned && trophy.trophyType == "platinum") {

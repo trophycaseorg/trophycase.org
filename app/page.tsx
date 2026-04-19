@@ -57,13 +57,16 @@ export default function Home() {
 				</Field>
 			</div>
 			<br />
-			<Button className="cursor-pointer" onClick={getTrophies}>
-				Show Trophies
-			</Button>
+			<div className="flex flex-row gap-4">
+				<Button className="cursor-pointer" onClick={getTrophies}>
+					Show Trophies
+				</Button>
+			</div>
+			<br />
 			{!isPendingData ? 
 			<div className="flex flex-col gap-4 justify-self-center w-400 h-[calc(72.5vh)] overflow-y-scroll no-scrollbar p-4">
 				{games?.map((game) => (
-					<GameDialog key={game.name} game={game} open={openGameName == game.name} handleClose={() => setOpenGameName(null)} trigger={
+					<GameDialog key={game.name + game.platform} game={game} open={openGameName == game.name} handleClose={() => setOpenGameName(null)} trigger={
 						<DialogTrigger asChild>
 							<div onClick={() => setOpenGameName(game.name)} className="cursor-pointer">
 								<GameCell game={game} />
@@ -72,7 +75,7 @@ export default function Home() {
 					} />
 				))}
 			</div>
-			: 
+			:
 			<Spinner className="w-35 h-35" />
 			}
 		</div>
