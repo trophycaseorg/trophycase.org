@@ -1,3 +1,4 @@
+import axios from "axios"
 import { Router } from "express"
 import {
     exchangeNpssoForAccessCode,
@@ -5,110 +6,44 @@ import {
     exchangeRefreshTokenForAuthTokens,
     getUserTitles,
     getUserTrophiesEarnedForTitle,
-    getTitleTrophies
+    getTitleTrophies,
+    makeUniversalSearch
 } from "psn-api"
 
 export const psnRouter = Router()
 
 psnRouter.get("/auth", async (req, res) => {
     const npsso = req.query.npsso as string
+    const psnName = req.query.psnName as string
 
     const accessCode = await exchangeNpssoForAccessCode(npsso)
     const auth = await exchangeAccessCodeForAuthTokens(accessCode)
 
-    return res.redirect(`/psn/getGames?accessToken=${auth.accessToken}`)
+    if (psnName !== "me") {
+        const {domainResponses} = await makeUniversalSearch(
+            {
+                accessToken: auth.accessToken
+            },
+            psnName,
+            "SocialAllAccounts"
+        )
 
-    /*
-    const {trophyTitles} = await getUserTitles(
-        {
-            accessToken: auth.accessToken
-        },
-        "me"
-    );
-
-    console.log(`Found ${trophyTitles.length} games with trophies`)
-
-    const results = []
-    const title = trophyTitles[0]
-    const {trophies} = await getUserTrophiesEarnedForTitle(
-        {
-            accessToken: auth.accessToken
-        },
-        "me",
-        title.npCommunicationId,
-        "all",
-        {
-            npServiceName: title.trophyTitlePlatform !== "PS5" ? "trophy" : "trophy2"
-        }
-    )
-
-    const betterTrophies = []
-    for (const trophy of trophies) {
-        const trophyObject = {
-            "trophyName": trophy.trophyRewardName,
-            "trophyId": trophy.trophyId,
-            "trophyHidden": trophy.trophyHidden,
-            "earned": trophy.earned,
-            "earnedDateTime": trophy.earnedDateTime,
-            "trophyType": trophy.trophyType,
-            "trophyRare": trophy.trophyRare,
-            "trophyEarnedRate": trophy.trophyEarnedRate,
-        }
-        betterTrophies.push(trophyObject)
+        const accountID = domainResponses[0].results[0].socialMetadata.accountId
+        return res.redirect(`/psn/getGames?accessToken=${auth.accessToken}&accountID=${accountID}`)
     }
 
-    const gameObject = {
-        game: title.trophyTitleName,
-        boxArt: title.trophyTitleIconUrl,
-        platform: title.trophyTitlePlatform,
-        progress: title.progress,
-        trophies: betterTrophies,
-    }
-    results.push(gameObject)
-
-    /* for (const title of trophyTitles) {
-        try {
-            const {trophies} = await getUserTrophiesEarnedForTitle(
-                {
-                    accessToken: auth.accessToken
-                },
-                "me",
-                title.npCommunicationId,
-                "all",
-                {
-                    npServiceName: title.trophyTitlePlatform !== "PS5" ? "trophy" : "trophy2"
-                }
-            )
-
-            const gameObject = {
-                game: title.trophyTitleName,
-                platform: title.trophyTitlePlatform,
-                progress: title.progress,
-                trophies,
-            }
-
-            results.push(gameObject);
-
-            await new Promise((r) => setTimeout(r, 300))
-        } catch (error) {
-            continue
-        }
-    }
-
-    return res.json({
-        "trophies": results
-    })
-    */
+    return res.redirect(`/psn/getGames?accessToken=${auth.accessToken}&accountID=me`)
 })
 
 psnRouter.get("/getGames", async (req, res) => {
     const accessToken = req.query.accessToken as string
+    const accountID = req.query.accountID as string
 
     const {trophyTitles} = await getUserTitles(
         {
             accessToken: accessToken
         },
-        "me"
+        accountID
     );
 
     console.log(`Found ${trophyTitles.length} games with trophies`)
@@ -131,7 +66,7 @@ psnRouter.get("/getGames", async (req, res) => {
                 {
                     accessToken: accessToken
                 },
-                "me",
+                accountID,
                 title.npCommunicationId,
                 "all",
                 {
