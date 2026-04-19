@@ -13,7 +13,7 @@ export default function TrophyCell(props: TrophyCellProps) {
             <div className="flex flex-col h-fit">
                 <div className="flex flex-row gap-2 h-fit items-center">
                     <img src={`/${trophy.trophyType}_trophy.png`} className="w-10 h-10" />
-                    <div className="flex flex-col">
+                    <div className="flex flex-col w-250">
                         <h5 className={`scroll-m-20 text-lg tracking-tight font-bold`}>
                             {trophy.trophyName}
                         </h5>

@@ -26,6 +26,7 @@ export default function Home() {
 	return (
 		<div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-mono dark:bg-black p-10">
 			<h1 className={`scroll-m-20 text-4xl font-semibold tracking-tight text-balance`}>TrophyCase.org</h1>
+			<br />
 			<Field className="w-150">
 				<FieldLabel htmlFor="input-npsso">NPSSO</FieldLabel>
 				<Input id="input-npsso" type="password" placeholder="Enter your NPSSO token" onChange={(e) => setNPSSO(e.target.value)}/>
@@ -37,7 +38,7 @@ export default function Home() {
 			<Button className="cursor-pointer" onClick={getTrophies}>
 				Show Trophies
 			</Button>
-			<div className="flex flex-col gap-4 justify-self-center w-400 h-[calc(85vh-75px)] overflow-y-scroll no-scrollbar p-4">
+			<div className="flex flex-col gap-4 justify-self-center w-400 h-[calc(77.5vh)] overflow-y-scroll no-scrollbar p-4">
 				{games?.map((game) => (
 					<GameDialog game={game} open={openGameName == game.name} handleClose={() => setOpenGameName(null)} trigger={
 						<DialogTrigger asChild>
