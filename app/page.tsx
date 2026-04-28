@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { API_URL } from "@/lib/utils";
 import { PSNGame } from "@/lib/types/psn";
 import GameCell from "./components/game_cell";
@@ -32,6 +32,34 @@ export default function Home() {
 			setIsPendingData(false)
 			setIsError(true)
 		})
+	}
+
+	const fileInput = useRef<HTMLInputElement>(null)
+	const [importedGame, setImportedGame] = useState<PSNGame | undefined>(undefined)
+	const [importedGameDialogOpen, setImportedGameDialogOpen] = useState(false)
+	const trophyDataFilePicker = (event: ChangeEvent<HTMLInputElement>) => {
+		const files = event.target.files
+		if (files && files.length > 0) {
+			const reader = new FileReader()
+			reader.onload = (e) => {
+				if (e.target !== null) {
+					const data = e.target.result as string
+					setImportedGame(JSON.parse(data))
+					setImportedGameDialogOpen(true)
+				}
+			}
+			reader.readAsText(files[0])
+		}
+	}
+
+	const showImportedGameDialog = () => {
+		if (importedGame !== undefined) {
+			return (
+				<GameDialog game={importedGame as PSNGame} open={importedGameDialogOpen} handleClose={() => setImportedGameDialogOpen(false)} trigger={
+					<></>
+				} />
+			)
+		}
 	}
 
 	return (
@@ -61,8 +89,13 @@ export default function Home() {
 				<Button className="cursor-pointer" onClick={getTrophies}>
 					Show Trophies
 				</Button>
+				<Button className="cursor-pointer" onClick={() => fileInput.current?.click()}>
+					Import Trophy Data
+				</Button>
+				<input type="file" ref={fileInput} onChange={trophyDataFilePicker} className="hidden" multiple={false} accept="text/csv,application/json" />
 			</div>
 			<br />
+			{showImportedGameDialog()}
 			{!isPendingData ? 
 			<div className="flex flex-col gap-4 justify-self-center w-400 h-[calc(72.5vh)] overflow-y-scroll no-scrollbar p-4">
 				{games?.map((game) => (

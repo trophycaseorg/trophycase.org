@@ -53,7 +53,7 @@ export default function GameDialog(props: GameDialogProps) {
     }
 
     const exportingMethods = ["JSON", "CSV"]
-    const [exportMethod, setExportMethod] = useState<DataExportType>()
+    const [exportMethod, setExportMethod] = useState<DataExportType>(DataExportType.JSON)
     const exportGameData = async () => {
         switch (exportMethod) {
             case DataExportType.JSON: {
