@@ -76,7 +76,10 @@ export default function Home() {
 				))}
 			</div>
 			:
-			<Spinner className="w-35 h-35" />
+			<div className="flex flex-col items-center">
+				<h3 className={`scroll-m-20 text-xl tracking-tight text-balance`}>Fetching trophies...</h3>
+				<Spinner className="w-35 h-35" />
+			</div>
 			}
 		</div>
 	);

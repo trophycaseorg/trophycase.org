@@ -6,6 +6,9 @@ import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import * as converter from "json-2-csv"
+import { Checkbox } from "@/components/ui/checkbox";
+import { Field } from "@/components/ui/field";
+import { Label } from "@/components/ui/label";
 
 interface GameDialogProps {
     open: boolean,
@@ -23,6 +26,7 @@ export default function GameDialog(props: GameDialogProps) {
     const {open, handleClose, trigger, game} = props
 
     const [trophies, setTrophies] = useState<PSNTrophy[]>(game.trophies)
+    const [showHidden, setShowHidden] = useState(true)
 
     const sortingMethods = ["ID (Ascending)", "ID (Descending)", "Rarity (Ascending)", "Rarity (Descending)"]
     const sortTrophies = (method: string) => {
@@ -121,11 +125,18 @@ export default function GameDialog(props: GameDialogProps) {
                         </Combobox>
                         <Button className="cursor-pointer" onClick={exportGameData}>Export</Button>
                     </div>
+                    <br />
+                    <div className="border-gray-600 border p-4 px-8">
+                        <Field orientation="horizontal">
+                            <Checkbox id="show-hidden-trophies-checkbox" name="show-hidden-trophies-checkbox" checked={showHidden} onCheckedChange={(e) => setShowHidden(e.valueOf() as boolean)} />
+                            <Label htmlFor="show-hidden-trophies-checkbox">Show Hidden Trophies</Label>
+                        </Field>
+                    </div>
                 </DialogHeader>
                 <Separator orientation="horizontal" />
-                <div className="flex flex-col gap-4 justify-self-center w-300 h-200 overflow-y-scroll no-scrollbar border-4 p-4">
+                <div className="flex flex-col gap-4 justify-self-center w-300 h-175 overflow-y-scroll no-scrollbar border-4 p-4">
                     {trophies.map((trophy) => (
-                        <TrophyCell key={trophy.trophyId} trophy={trophy} />
+                        <TrophyCell key={trophy.trophyId} trophy={trophy} showHidden={showHidden} />
                     ))}
                 </div>
             </DialogContent>
