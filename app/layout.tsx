@@ -32,7 +32,7 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-mono", jetbrainsMono.variable)}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full min-w-full flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="dark">
           {children}
         </ThemeProvider>

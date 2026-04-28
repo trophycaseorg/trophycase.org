@@ -1,4 +1,3 @@
-import axios from "axios"
 import { Router } from "express"
 import {
     exchangeNpssoForAccessCode,
@@ -9,6 +8,8 @@ import {
     getTitleTrophies,
     makeUniversalSearch
 } from "psn-api"
+import { addPSNGame, getPSNGame } from "../lib/database.ts"
+import type { PSNGame, PSNTrophy } from "../lib/types/psn.ts"
 
 export const psnRouter = Router()
 
@@ -74,24 +75,25 @@ psnRouter.get("/getGames", async (req, res) => {
                 }
             )
 
-            const fullTrophyData = []
+            const fullTrophyData: PSNTrophy[] = []
             for (const trophy of gameTrophies.trophies) {
                 const userTrophy = userTrophies.trophies.at(gameTrophies.trophies.indexOf(trophy))
-                const trophyObject = {
+                const trophyObject: PSNTrophy = {
                     "trophyId": trophy.trophyId,
                     "trophyHidden": trophy.trophyHidden,
                     "trophyType": trophy.trophyType,
-                    "trophyName": trophy.trophyName,
-                    "trophyDetail": trophy.trophyDetail,
-                    "trophyIconUrl": trophy.trophyIconUrl,
-                    "trophyGroupId": trophy.trophyGroupId,
+                    "trophyName": trophy.trophyName as string,
+                    "trophyDetail": trophy.trophyDetail as string,
+                    "trophyIconUrl": trophy.trophyIconUrl as string,
+                    "trophyGroupId": trophy.trophyGroupId as string,
                     "trophyEarned": userTrophy?.earned,
                     "trophyEarnedDate": userTrophy?.earnedDateTime
                 }
                 fullTrophyData.push(trophyObject)
             }
 
-            const gameObject = {
+            const gameObject: PSNGame = {
+                npCommunicationId: title.npCommunicationId,
                 name: title.trophyTitleName,
                 boxArt: title.trophyTitleIconUrl,
                 platform: title.trophyTitlePlatform,
